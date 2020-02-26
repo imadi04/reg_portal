@@ -40,35 +40,67 @@ class Zomato:
 
 
     def register(self):
-        self.label1=Label(self.root,text="Name:",bg="#0089ae",fg="#ffffff")
-        self.label1.configure(font=("Constantia",12,"bold"))
-        self.name=Entry(self.root)
+        self.regwindow=Tk()
+        self.namelabel=Label(self.regwindow,text="Name:")
+        self.namelabel.configure(font=("Constantia",12,"bold"))
+        self.namelabel.pack()
+        self.name=Entry(self.regwindow)
         self.name.pack(ipadx=5,ipady=10)
         print(self.name.get())
-        self.label2=Label(self.root,text="Email:",bg="#0089ae",fg="#ffffff")
-        self.label2.configure(font=("Constantia",12,"bold"))
-        self.email=Entry(self.root)
+        self.emaillabel=Label(self.regwindow,text="Email:")
+        self.emaillabel.configure(font=("Constantia",12,"bold"))
+        self.emaillabel.pack()
+        self.email=Entry(self.regwindow)
         self.email.pack(ipadx=5,ipady=10)
-        self.label3=Label(self.root,text="Password:",bg="#0089ae",fg="#ffffff")
-        self.label3.configure(font=("Constantia",12,"bold"))
-        self.password=Entry(self.root)
+        self.passwordlabel=Label(self.regwindow,text="Password:")
+        self.passwordlabel.configure(font=("Constantia",12,"bold"))
+        self.passwordlabel.pack()
+        self.password=Entry(self.regwindow)
         self.password.pack(ipadx=5,ipady=10)
-        self.click=Button(self.root,text="Enter",width=30,height=2,command=lambda:[self.mycursor.execute("INSERT INTO users(user_id,name,email,password) VALUES(NULL,'{}','{}','{}')".format(self.name.get(),self.email.get(),self.password.get())),self.conn.commit()])                                                                                                 
+        self.click=Button(self.regwindow,text="Enter",width=30,height=2,command=lambda:[self.mycursor.execute("INSERT INTO users(user_id,name,email,password) VALUES(NULL,'{}','{}','{}')"
+        .format(self.name.get(),self.email.get(),self.password.get())),
+        self.conn.commit(),
+        self.regwindow.destroy()])                                                                                                 
         self.click.pack(pady=(15,15))
         
         print("Registration successful")
 
-    def login(self):
-        email=input("Enter email:")
-        password=input("Enter password:")
-
-        self.mycursor.execute("SELECT * FROM users WHERE email like '{}' AND password LIKE '{}'".format(email,password))
-        if len(self.mycursor.fetchall())==0:
-            print("Incorrect credentials")
+    def validate(self):
+        print("entered email:",self.email2.get())
+        print("Entered password:",self.password2.get())
+        res=self.mycursor.fetchall()
+        print(res)
+        if len(res)>0:
+            fetched_email=res[0][0]
+            fetched_password=res[0][1]
+            #print(fetched_email)
+            #print(fetched_password)
+            print("Welcome")
         else:
-            username=email.split('@')
-            username=username[0]
-            print("Welcome {}!!".format(username))
+            print("Incorrect")    
+        
+
+
+    def login(self):
+        self.loginwindow=Tk()
+        self.emaillabel2=Label(self.loginwindow,text="Email:")
+        self.emaillabel2.configure(font=("Constantia",12,"bold"))
+        self.emaillabel2.pack()
+        self.email2=Entry(self.loginwindow)
+        self.email2.pack(ipadx=5,ipady=10)
+        self.passwordlabel2=Label(self.loginwindow,text="Password:")
+        self.passwordlabel2.configure(font=("Constantia",12,"bold"))
+        self.passwordlabel2.pack()
+        self.password2=Entry(self.loginwindow)
+        self.password2.pack(ipadx=5,ipady=10)
+        print(self.email2.get())
+        self.log=Button(self.loginwindow,text="Login",
+        command=lambda:[self.mycursor.execute("SELECT * FROM users WHERE email like '{}' AND password LIKE '{}'"
+        .format(self.email2.get(),self.password2.get())),self.validate()])
+        self.log.pack()
+        
+
+        #self.mycursor.execute("SELECT * FROM users WHERE email like '{}' AND password LIKE '{}'".format(email,password))
             
 obj=Zomato()
 
